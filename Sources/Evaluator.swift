@@ -717,4 +717,34 @@ open class Evaluator {
             return ":matchesOwn(\(pattern.toString())"
         }
     }
+    
+     /**
+     * Evaluator for matching Element's own special text with regex
+     */
+    
+     public class ContainsOwnSpecialText: Evaluator {
+        private let searchText: String
+
+        public init(_ searchText: String) {
+            self.searchText = searchText.lowercased()
+        }
+
+        public override func matches(_ root: Element, _ element: Element) throws -> Bool {
+            return element.ownText().lowercased().removeAccents().contains(searchText.removeAccents())
+        }
+
+        public override func toString() -> String {
+            return ":containsOwn(\(searchText)"
+        }
+    }
+}
+extension String {
+    func removeAccents() -> String {
+        return self.folding(
+            options: .diacriticInsensitive, locale: .current
+        )
+        .replacingOccurrences(of: "đ", with: "d")
+        .replacingOccurrences(of: "Đ", with: "D")
+    }
+
 }
